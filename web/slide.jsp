@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="no-js">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,7 +35,7 @@
 		
 		<div id="pt-main" class="pt-perspective">
 			<div class="pt-page pt-page-1">
-			        首页面1
+			        首页面
 			</div>
 			<div class="pt-page pt-page-2"><h1>jQuery页面过渡转换2</h1></div>
 			<div class="pt-page pt-page-3"><h1>jQuery页面过渡转换3</h1></div>
