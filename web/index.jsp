@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div>测试报表</div>
+<div>测试报表11</div>
 <div id="pie_chart">
 
 </div>
