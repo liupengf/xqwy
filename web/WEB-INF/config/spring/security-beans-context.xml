@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans default-lazy-init="true"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- Spring Security Entrance - FilterChainProxy -->
+	<bean id="springSecurityFilterChain" class="org.springframework.security.web.FilterChainProxy">
+		<constructor-arg>
+			<list>
+				<sec:filter-chain pattern="/res/**" filters="none" />
+				<sec:filter-chain pattern="/favicon.ico" filters="none" />
+				
+				<!-- 登录页面 -->
+				<sec:filter-chain pattern="/f/login" filters="none" /> 
+				
+				<!-- 权限控制filter-chain，勿改变顺序，具体可参考Spring Security文档 -->
+				<sec:filter-chain pattern="/**"
+					filters="
+						securityContextPersistenceFilter,
+						logoutFilter,
+						formLoginFilter,
+						exceptionTranslationFilter,
+						filterSecurityInterceptor" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="securityContextPersistenceFilter"
+		class="org.springframework.security.web.context.SecurityContextPersistenceFilter" />
+
+	<!-- Logout Filter Logout path - j_spring_security_logout -->
+	<bean id="logoutFilter"
+		class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg>
+			<bean
+				class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+				<property name="defaultTargetUrl" value="/f/login" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<list>
+				<bean
+					class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!-- Form登录Filter Login path - j_spring_security_check Username http param 
+		- j_usernames Password http param - j_password -->
+	<bean id="formLoginFilter"
+		class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationSuccessHandler" ref="authorityBasedAuthenticationSuccessHandler"/>
+		<!-- <property name="authenticationFailureHandler" ref="ajaxAuthenticationFailureHandler" />
+		<property name="authenticationSuccessHandler" ref="ajaxAuthenticationSuccessHandler" /> -->
+		
+		
+		<property name="filterProcessesUrl" value="/b/thuFormLogin" />
+	</bean>
+	
+	<!-- <bean id="ajaxAuthenticationFailureHandler"
+		class="org.thcic.ejw.security.AjaxAuthenticationFailureHandler">
+	</bean>
+
+	<bean id="ajaxAuthenticationSuccessHandler"
+		class="org.thcic.ejw.security.AjaxAuthenticationSuccessHandler">
+	</bean> -->
+
+	<!-- Exception Translation Filter -->
+	<bean id="exceptionTranslationFilter"
+		class="org.springframework.security.web.access.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint" ref="authenticationEntryPoint" />
+		<property name="accessDeniedHandler" ref="accessDeniedHandler" />
+	</bean>
+	<bean id="authenticationEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/f/login" />
+	</bean>
+	<bean id="accessDeniedHandler"
+		class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+		<property name="errorPage" value="/f/accessDenied" />
+	</bean>
+
+	<!-- 权限控制Filter -->
+	<bean id="filterSecurityInterceptor"
+		class="org.springframework.security.web.access.intercept.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="accessDecisionManager" ref="accessDecisionManager" />
+		<property name="rejectPublicInvocations" value="false" />
+		<property name="securityMetadataSource">
+			<bean
+				class="org.springframework.security.web.access.intercept.DefaultFilterInvocationSecurityMetadataSource">
+				<constructor-arg>
+					<ref bean="requestMap" />
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="accessDecisionManager"
+		class="org.springframework.security.access.vote.AffirmativeBased">
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.security.access.vote.RoleVoter">
+					<property name="rolePrefix" value="" />
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="customWebInvocationPrivilegeEvaluator" class="org.springframework.security.web.access.DefaultWebInvocationPrivilegeEvaluator">
+        <constructor-arg name="securityInterceptor" ref="filterSecurityInterceptor" />
+    </bean>
+</beans>

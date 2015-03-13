@@ -1,0 +1,35 @@
+
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:15px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+	width: 90%;
+    margin-left: 5%;
+    margin-bottom: 4%;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+ tr.even,tr.first{
+   background-color:#fff;
+  }
+   tr.odd,tr.second{
+   background-color:#f5fafe;
+  }
+  tr.third{
+  background-color:#ccc;
+  }
